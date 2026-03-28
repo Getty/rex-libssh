@@ -1,0 +1,8 @@
+Revision history for Rex-LibSSH
+
+{{$NEXT}}
+  - Initial release
+  - Rex::Interface::Connection::LibSSH — SSH connection via Net::LibSSH
+  - Rex::Interface::Exec::LibSSH — command execution via SSH exec channels
+  - Rex::Interface::Fs::LibSSH — filesystem operations without SFTP
+  - Rex::Interface::File::LibSSH — file read/write via exec channels
