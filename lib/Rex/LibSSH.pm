@@ -65,9 +65,13 @@ Or pass keys directly to C<Rex::connect>:
   );
 
 Host key checking is disabled by default (C<strict_hostkeycheck =E<gt> 0>)
-to avoid blocking non-interactive deploys. Enable it if security requires:
+to avoid blocking non-interactive deploys. To enable it, pass the option
+when connecting:
 
-  # See Rex::Interface::Connection::LibSSH for options
+  Rex::connect(
+      server            => '10.0.0.1',
+      strict_hostkeycheck => 1,
+  );
 
 =head1 SEE ALSO
 
