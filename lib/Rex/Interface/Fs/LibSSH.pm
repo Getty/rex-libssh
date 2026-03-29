@@ -1,7 +1,7 @@
 # ABSTRACT: Rex filesystem operations via exec channels (no SFTP)
 
 package Rex::Interface::Fs::LibSSH;
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 use strict;
 use warnings;
 
