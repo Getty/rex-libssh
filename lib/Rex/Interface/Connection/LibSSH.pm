@@ -50,6 +50,11 @@ sub connect {
         return;
     }
 
+    # Reset timeout to 0 (infinite) after connect — the connect timeout must
+    # be short so unreachable hosts fail fast, but channel reads (e.g. apt-get
+    # with DKMS build) must not time out. libssh's timeout option affects both.
+    $ssh->option( timeout => 0 );
+
     $self->{connected} = 1;
 
     # Try authentication in order
