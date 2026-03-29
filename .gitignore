@@ -2,3 +2,20 @@
 Rex-LibSSH-*/
 *.tar.gz
 blib/
+AGENTS.md
+
+# Claude Code — keep skills/, agents/, hooks/, settings.json
+.claude/*
+!.claude/settings.json
+!.claude/agents/
+!.claude/agents/**
+!.claude/skills/
+!.claude/skills/**
+!.claude/hooks/
+!.claude/hooks/**
+.claude/*.local.*
+.claude/local/
+.claude/.credentials.json
+.claude/statsig/
+.claude/todos/
+.claude/projects/
