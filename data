@@ -1,0 +1,18 @@
+---
+class: standard
+completed: 2026-08-13T04:23:00Z
+created: 2026-08-12T23:37:01Z
+id: 1
+priority: high
+started: 2026-08-13T04:23:00Z
+status: done
+tags:
+- release
+- deps
+title: Pin Net::LibSSH to 0.002 in cpanfile
+updated: 2026-08-13T04:23:00Z
+---
+
+cpanfile has: requires Net::LibSSH, 0.001
+
+Latest released on CPAN is Net-LibSSH-0.002 (GETTY/Net-LibSSH-0.002.tar.gz), and 0.002 is what is installed here. Getty-authored dependencies pin to the latest *released* CPAN version. Release blocker.
