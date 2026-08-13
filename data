@@ -1,0 +1,20 @@
+---
+claimed_at: 2026-08-13T04:40:10Z
+claimed_by: claude
+class: standard
+completed: 2026-08-13T04:40:10Z
+created: 2026-08-12T23:37:42Z
+id: 5
+priority: medium
+started: 2026-08-13T04:13:15Z
+status: done
+tags:
+- fs
+- security
+title: Harden path quoting and cover it with tests
+updated: 2026-08-13T04:40:10Z
+---
+
+_q() single-quotes and escapes embedded quotes for every interpolated path -- except Fs::LibSSH::glob, whose pattern must stay unquoted so the remote shell expands it. That asymmetry is the security-relevant line in the distribution and has no test.
+
+Cover: paths with spaces, single quotes, $, backticks and newlines through is_file/stat/unlink/upload; and what glob does with a hostile pattern. These commands run as root on Hetzner dedicated servers via Rex::GPU and Rex::Rancher.
