@@ -1,0 +1,19 @@
+---
+claimed_at: 2026-08-13T05:02:04Z
+claimed_by: claude
+class: standard
+completed: 2026-08-13T05:02:04Z
+created: 2026-08-12T23:37:37Z
+id: 4
+priority: medium
+started: 2026-08-13T04:16:10Z
+status: done
+tags:
+- test
+title: Integration suite cannot prove the SFTP-free claim
+updated: 2026-08-13T05:02:04Z
+---
+
+t/lib/TestSSHD.pm writes "Subsystem sftp ..." whenever it finds an sftp-server binary, so the box under test has SFTP -- which is not the environment this distribution exists for. has_sftp is already exposed.
+
+Add a variant that runs sshd without the subsystem and asserts the operations succeed anyway. Today the suite proves the exec paths work, not that SFTP is unnecessary.
