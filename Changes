@@ -1,6 +1,9 @@
 Revision history for Rex-LibSSH
 
 {{$NEXT}}
+  - exec() now matches the 3-arg signature Rex::Commands::Run invokes
+    ($cmd, $path, $option), so env hashes and shell options actually
+    reach the SSH channel.
 
 0.002     2026-03-29 04:09:31Z
   - Reset session timeout to 0 after connect to allow long-running commands
