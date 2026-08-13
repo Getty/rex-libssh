@@ -1,0 +1,20 @@
+---
+claimed_at: 2026-08-13T05:01:51Z
+claimed_by: claude
+class: standard
+completed: 2026-08-13T05:01:51Z
+created: 2026-08-12T23:37:26Z
+id: 2
+priority: high
+started: 2026-08-13T04:15:59Z
+status: done
+tags:
+- exec
+- test
+title: Test + Changes entry for the 4-argument exec() signature
+updated: 2026-08-13T05:01:51Z
+---
+
+lib/Rex/Interface/Exec/LibSSH.pm has an uncommitted change: exec() went from ($self,$cmd,$option) to the 4-argument ($self,$cmd,$path,$option) form that Rex::Commands::Run::run actually calls, plus shell wrapping mirroring Rex::Interface::Exec::SSH (locale, path, profiles, env).
+
+Missing: a test that run with env => {...} reaches the remote shell (that is the bug the old arity silently caused), and a Changes entry naming the user-visible effect. Also verify the one-argument call path still works -- Fs::Base::_exec and Fs::LibSSH::_run both call $exec->exec($cmd), so $path and $option arrive undef on every is_file/stat/ls.
