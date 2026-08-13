@@ -1,0 +1,20 @@
+---
+claimed_at: 2026-08-13T05:02:10Z
+claimed_by: claude
+class: standard
+completed: 2026-08-13T05:02:10Z
+created: 2026-08-12T23:37:47Z
+id: 6
+priority: low
+started: 2026-08-13T04:16:15Z
+status: done
+tags:
+- fs
+- limitation
+title: upload/download and read-mode open hold whole files in memory
+updated: 2026-08-13T05:02:10Z
+---
+
+Fs::LibSSH::upload slurps the local file, download slurps the remote one, and File::LibSSH::open in < mode buffers the entire remote file locally before read()/seek() operate on it.
+
+Fine for config files, not for anything large. Either document the limit in POD or chunk through Channel::read($len)/write. Note Net::LibSSH::Channel::read(undef) reads nothing -- undef numifies to 0; pass -1 or no argument.
