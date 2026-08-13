@@ -88,6 +88,22 @@ sub ls {
 
 sub glob {
     my ( $self, $pattern ) = @_;
+
+    # The pattern is intentionally NOT _q()-wrapped: the remote shell
+    # has to expand *, ?, [...] in place. Quoting would suppress globbing.
+    # The security-relevant asymmetry: every other path here is _q()-wrapped;
+    # glob is the one place we trust the remote shell to parse something
+    # beyond a literal token. As a defense against a malicious or malformed
+    # pattern reaching this method, reject any character that would let the
+    # pattern break out of the command structure beyond what globbing
+    # allows. Legitimate glob patterns contain only path bytes and the
+    # glob meta-chars *, ?, [...], {a,b}, /, ., -, _, ~.
+    die "LibSSH glob: pattern contains NUL byte\n"
+        if defined $pattern && index( $pattern, "\0" ) >= 0;
+    die "LibSSH glob: pattern contains shell metacharacter outside glob syntax\n"
+        if defined $pattern
+        && $pattern =~ /[\0';|&<>`$()\n\r\\]/;
+
     my $out = $self->_run("echo $pattern");
     chomp $out;
     return split /\s+/, $out;
@@ -157,9 +173,19 @@ sub download {
     close $fh;
 }
 
-# Shell-quote a single path component
+# Shell-quote a single path component.
+#
+# Single-quote wrap with '\''-escaping of embedded single quotes is the
+# canonical POSIX-safe form. Inside single quotes the shell performs no
+# expansion, so this defends against spaces, $, `, \, newlines and the
+# empty string automatically.
+#
+# NUL (\0) cannot be represented in argv (libc terminates arguments on
+# NUL), so reject it loudly rather than letting libssh silently truncate.
 sub _q {
     my ($path) = @_;
+    die "LibSSH _q: path contains NUL byte\n"
+        if defined $path && index( $path, "\0" ) >= 0;
     $path =~ s/'/'"'"'/g;
     return "'$path'";
 }

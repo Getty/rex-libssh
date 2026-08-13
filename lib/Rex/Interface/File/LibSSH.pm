@@ -84,8 +84,15 @@ sub close {
     }
 }
 
+# Shell-quote a single path component.
+#
+# Same hardening as Fs::LibSSH::_q: single-quote wrap with '\''-escaping
+# defends against spaces, $, `, \, newlines and the empty string;
+# NUL (\0) is rejected because it cannot be represented in argv.
 sub _q {
     my ($path) = @_;
+    die "LibSSH File _q: path contains NUL byte\n"
+        if defined $path && index( $path, "\0" ) >= 0;
     $path =~ s/'/'"'"'/g;
     return "'$path'";
 }
