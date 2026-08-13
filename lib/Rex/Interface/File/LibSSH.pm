@@ -111,6 +111,16 @@ over the SSH connection and committed when C<close()> is called.
 Read mode (C<E<lt>>) slurps the entire file via C<cat> and buffers it
 locally; C<read()> and C<seek()> operate on the local buffer.
 
+=head1 LIMITATIONS
+
+Read-mode C<open> holds the whole file in memory on both ends at
+C<open()> time. C<read()> and C<seek()> then operate on that local
+buffer rather than the remote file, so seek past the buffered end
+returns no data. This is fine for config files but not appropriate for
+large files. A future implementation could stream through
+L<Net::LibSSH::Channel::read> with an explicit length —
+C<read(undef)> reads zero bytes, pass C<-1> or no argument to slurp.
+
 =head1 SEE ALSO
 
 L<Rex::Interface::Connection::LibSSH>, L<Rex::Interface::Fs::LibSSH>

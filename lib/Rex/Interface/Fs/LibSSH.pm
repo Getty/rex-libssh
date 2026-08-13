@@ -203,6 +203,27 @@ containers, embedded systems, or any host where C<set connection =E<gt>
 'OpenSSH'> would crash with C<Can't call method "stat" on an undefined
 value>.
 
+=head1 LIMITATIONS
+
+This class does not route filesystem operations through
+L<Rex::Interface::Fs::Sudo>. C<_run> hardcodes
+C<Rex::Interface::Exec-E<gt>create('LibSSH')> rather than letting
+C<create()> resolve via L<Rex::Interface::Connection::LibSSH/get_connection_type>,
+so operations reached from inside this class never get the Sudo wrap
+that C<get_connection_type> would normally select under
+C<L<Rex::is_sudo>>. This is a known limitation, not a bug: switching
+to the resolving form would change behaviour for every existing caller.
+Callers that need sudo-wrapped filesystem operations should use
+L<Rex::Interface::Fs::Sudo> explicitly.
+
+C<upload> and C<download> slurp the entire file into memory on both
+ends before sending or returning. This is fine for config files but
+not appropriate for large files. A future implementation could stream
+through L<Net::LibSSH::Channel::read> with an explicit length —
+C<read(undef)> reads zero bytes, so callers that pass through an
+optional C<$len> must default to slurping rather than passing it
+through unchanged.
+
 =head1 SEE ALSO
 
 L<Rex::Interface::Connection::LibSSH>, L<Rex::Interface::File::LibSSH>
