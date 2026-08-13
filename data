@@ -1,0 +1,20 @@
+---
+claimed_at: 2026-08-13T05:01:58Z
+claimed_by: claude
+class: standard
+completed: 2026-08-13T05:01:58Z
+created: 2026-08-12T23:37:32Z
+id: 3
+priority: medium
+started: 2026-08-13T04:16:04Z
+status: done
+tags:
+- fs
+- limitation
+title: Fs::LibSSH bypasses sudo
+updated: 2026-08-13T05:01:58Z
+---
+
+Fs::LibSSH::_run hardcodes Rex::Interface::Exec->create(LibSSH) instead of letting create() resolve the type from get_connection_type. Connection::LibSSH::get_connection_type returns Sudo under Rex::is_sudo(), so Rex routes to Rex::Interface::Fs::Sudo -- but any Fs operation reached from inside our own class never gets sudo-wrapped.
+
+Decide: document as a limitation, or route through the resolving form (which changes behaviour for every existing caller). Not a drive-by fix.
