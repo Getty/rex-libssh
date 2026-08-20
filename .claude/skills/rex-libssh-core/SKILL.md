@@ -1,6 +1,6 @@
 ---
 name: rex-libssh-core
-description: "Architecture and interface contracts of Rex::LibSSH — the four Rex interfaces (Connection, Exec, Fs, File) reimplemented on Net::LibSSH exec channels so no SFTP subsystem is required. Covers how Rex dispatches on get_connection_type, the 4-argument exec() signature Rex actually calls, the Net::LibSSH channel API and its read/exit_status traps, the timeout reset, why sudo silently bypasses this backend, and what the sshd-based test harness can and cannot prove."
+description: Load before editing Rex::LibSSH — the four Rex interfaces on Net::LibSSH exec channels, the exec() signature Rex actually calls, the channel traps, why sudo bypasses this backend.
 ---
 
 # Rex::LibSSH — core
@@ -186,11 +186,11 @@ That asymmetry is the security-relevant line in this distribution.
 
 ```bash
 prove -lr t/            # -r matters: t/lib/ holds the harness, plain -l t/ is not recursive
-prove -lv t/01-rex-integration.t
+prove -lv t/01-getty-rex-integration.t
 ```
 
 `t/00-load.t` only checks that four modules compile. The proof is
-`t/01-rex-integration.t`, which starts a **real sshd** on a free port via
+`t/01-getty-rex-integration.t`, which starts a **real sshd** on a free port via
 `t/lib/TestSSHD.pm` — ed25519 host and client keys in a tempdir, `StrictModes no`,
 `AllowUsers $current_user`, killed via `SIGTERM` in `DESTROY` — and drives `run`,
 `is_file`, `is_dir`, `mkdir`, `file`, `stat`, `upload` and `download` against it.
@@ -212,4 +212,4 @@ shape: `sub new { my ($that,%args)=@_; bless {%args}, ref($that)||$that }`, `use
 on the matching `Rex::Interface::*::Base`. `# ABSTRACT:` first line, `our $VERSION`
 right after `package`, POD at the end of the file. `Rex::Logger::debug` for tracing,
 `Rex::Logger::info(..., 'warn')` for connection failures. Everything else: skill
-`perl-core`. Rex's own idioms, connection types and command surface: skill `rex`.
+`getty-perl-core`. Rex's own idioms, connection types and command surface: skill `getty-rex`.
