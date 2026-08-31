@@ -186,11 +186,11 @@ That asymmetry is the security-relevant line in this distribution.
 
 ```bash
 prove -lr t/            # -r matters: t/lib/ holds the harness, plain -l t/ is not recursive
-prove -lv t/01-getty-rex-integration.t
+prove -lv t/01-rex-integration.t
 ```
 
 `t/00-load.t` only checks that four modules compile. The proof is
-`t/01-getty-rex-integration.t`, which starts a **real sshd** on a free port via
+`t/01-rex-integration.t`, which starts a **real sshd** on a free port via
 `t/lib/TestSSHD.pm` — ed25519 host and client keys in a tempdir, `StrictModes no`,
 `AllowUsers $current_user`, killed via `SIGTERM` in `DESTROY` — and drives `run`,
 `is_file`, `is_dir`, `mkdir`, `file`, `stat`, `upload` and `download` against it.

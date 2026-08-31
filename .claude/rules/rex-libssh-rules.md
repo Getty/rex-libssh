@@ -105,7 +105,7 @@ don't invoke the skill first, just use it. Board state lives in `refs/karr/*`.
 - `karr edit ID -a "note"` · `karr move ID in-progress --claim NAME` · `karr handoff ID --claim NAME --note "…"`
 
 Serialize board mutations when fanning out: keep implementation parallel, then loop the
-`karr move`/`handoff`/`sync` calls sequentially. Full command surface: skill `karr`.
+`karr move`/`handoff`/`sync` calls sequentially. Full command surface: skill `kanban-issues-karr-cli`.
 
 ## GitHub issues — never act without instruction
 
@@ -117,7 +117,7 @@ specific issue.
 
 ## Reference, don't restate
 
-Perl house style and cpanfile pinning: skills `perl-core`, `perl-release-author-getty`.
-Rex idioms, connection types and command surface: skill `rex`. This distribution's
+Perl house style and cpanfile pinning: skills `getty-perl-core`, `getty-perl-release-author-getty`.
+Rex idioms, connection types and command surface: skill `getty-rex`. This distribution's
 interface contracts and the Net::LibSSH channel API: skill `rex-libssh-core`. All are
 force-loaded for `rex-libssh-*` agents; do not duplicate them here.
