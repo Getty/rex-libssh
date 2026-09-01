@@ -1,5 +1,7 @@
 Revision history for Rex-LibSSH
 
+{{$NEXT}}
+
 0.003     2026-09-01 00:07:32Z
   - exec() now matches the 3-arg signature Rex::Commands::Run invokes
     ($cmd, $path, $option), so env hashes and shell options actually
