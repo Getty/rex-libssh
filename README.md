@@ -48,7 +48,31 @@ Rex::connect(
 );
 ```
 
-Host key checking is disabled by default to avoid blocking non-interactive deploys. Enable it by passing `strict_hostkeycheck => 1` to `Rex::connect`.
+## Host key verification
+
+The server's host key is verified against `known_hosts` by default, exactly
+like an interactive `ssh` client but without the prompt: an unknown or
+changed key makes the connection fail before any authentication is attempted.
+Add the host out of band first (`ssh-keyscan -p 22 10.0.0.1 >> ~/.ssh/known_hosts`),
+or turn verification off explicitly. Requires Net::LibSSH 0.004 or later.
+
+```perl
+# Rexfile-wide, same flag the OpenSSH backend honours
+use Rex -feature => ['1.4', 'disable_strict_host_key_checking'];
+
+# or per connection
+Rex::connect(
+    server              => '10.0.0.1',
+    strict_hostkeycheck => 0,
+    knownhosts          => '/path/to/known_hosts',   # optional, default ~/.ssh/known_hosts
+);
+```
+
+`Rex::Config->set_openssh_opt( UserKnownHostsFile => $file )` is honoured as
+well, so a Rexfile can point every connection at its own `known_hosts`.
+
+Versions before 0.004 never verified the host key, regardless of what was
+passed (CWE-322).
 
 ## Installation
 
