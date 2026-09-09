@@ -1,0 +1,34 @@
+---
+claimed_at: 2026-09-09T06:04:23Z
+claimed_by: rex-libssh
+class: standard
+completed: 2026-09-09T06:04:23Z
+created: 2026-09-08T19:07:35Z
+id: 8
+priority: high
+started: 2026-09-08T19:56:42Z
+status: done
+title: 'Security: strict_hostkeycheck wird unconditional auf 0 gesetzt (CPANSec-Report,
+  CWE-322)'
+updated: 2026-09-09T06:04:23Z
+---
+
+Privater Report (James via CPANSec) zu Rex-LibSSH 0.003 + Net-LibSSH 0.003. 14-Tage-Disclosure ab Maintainer-Notifikation (2026-09-08).
+
+Verifiziert 2026-09-08:
+- lib/Rex/Interface/Connection/LibSSH.pm:45 setzt strict_hostkeycheck => 0 hart; $opt{strict_hostkeycheck} und $opt{knownhosts} werden nie gelesen. Rex::connect() reicht %param durch, das dokumentierte Opt-in (lib/Rex/LibSSH.pm POD, README) ist also wirkungslos.
+- Net::LibSSH connect() (LibSSH.xs) ruft nur ssh_connect(); kein ssh_session_is_known_server(). Live-Repro gegen TestSSHD mit strict_hostkeycheck=1 + leerem knownhosts: connect, auth_publickey und exec erfolgreich.
+
+Fix-Reihenfolge: (1) Net::LibSSH: Known-Server-Check in connect() nach ssh_connect, unbekannt/geaendert im Strict-Modus ablehnen, Tests fuer trusted/unknown/changed. (2) Rex::LibSSH: $opt{strict_hostkeycheck}/{knownhosts} an Backend durchreichen, sicherer Default, Regressionstest dass Auth bei fehlgeschlagener Host-Verifikation nicht stattfindet. (3) cpanfile auf released Net::LibSSH mit Fix pinnen. Kein Release ohne Freigabe. Downstream Rex::GPU/Rex::Rancher pruefen (Hetzner-Neuinstallationen haben keinen known_hosts-Eintrag).
+
+Net-LibSSH: Fix fuer #12 ist committed (29f509a), Release 0.004 wartet auf Freigabe. Ab 0.004 prueft connect() den Host-Key bei strict_hostkeycheck=1 wirklich; strict=0 (was Rex::Interface::Connection::LibSSH heute unconditional setzt) prueft weiterhin gar nicht. Rex-Fix kann gegen Net::LibSSH >= 0.004 pinnen.
+
+Rex-Fix in Arbeit (claude-main): Connection::LibSSH liest strict_hostkeycheck/knownhosts aus opt, sonst openssh_opt StrictHostKeyChecking/UserKnownHostsFile (= -feature disable_strict_host_key_checking), Default strikt; error() traegt die Ablehnung. t/05-hostkey.t 24 Tests gruen gegen echten sshd inkl. Task-Pfad. Offen: t/02+t/03 knownhosts-Zeile, POD, cpanfile-Pin auf Net::LibSSH 0.004 -- auf CPAN liegt noch 0.003, Pin erst nach dessen Release.
+
+Fix committed. Connection::LibSSH: strict Default, per-connect strict_hostkeycheck/knownhosts, Fallback auf openssh_opt StrictHostKeyChecking/UserKnownHostsFile (= -feature disable_strict_host_key_checking), error() traegt Ablehnung. t/05-hostkey.t neu, Harness schreibt known_hosts, Suite 67/67 gegen echten sshd, dzil build sauber. POD/README/Changes/CLAUDE.md aktualisiert. OFFEN vor Release: cpanfile-Pin Net::LibSSH 0.004 -- auf CPAN liegt noch 0.003, Pin erst nach Net-LibSSH-Release; Release-Reihenfolge Net::LibSSH 0.004 dann Rex::LibSSH 0.004. Downstream Rex::GPU/Rex::Rancher: frische Hetzner-Hosts brauchen ssh-keyscan oder das Feature-Flag.
+
+2026-09-09 02:08 Independent pre-release audit (rex-libssh-release-checker, 2026-09-09) confirms: all 5 lib/ modules at $VERSION 0.004; Changes {{$NEXT}} covers the CWE-322 fix and the Net::LibSSH 0.004 requirement, matches git log since v0.003 (only non-behavioral .claude/skill commits omitted, correctly); dist.ini [@Author::GETTY] with copyright_holder/copyright_year intact; dzil build clean, LICENSE tracked; git ls-files .claude shows no settings.local.json/credentials (confirmed gitignored + untracked); prove -lr t/ = 6 files/67 tests PASS with zero skip_all, t/01-rex-integration.t 11/11 real-sshd tests, t/05-hostkey.t 24/24 including the strict-default rejection, changed-key MITM rejection, both opt-outs, precedence and the Task-path -- all against a real spawned sshd, independently re-run. cpanm --info Net::LibSSH confirms GETTY/Net-LibSSH-0.003.tar.gz is still the latest released version, so the cpanfile's Net::LibSSH => 0.004 pin has no resolvable target yet -- confirmed as the sole release blocker, exactly as this card already states. POD in Rex::LibSSH and Connection::LibSSH checked line-by-line against connect()'s actual precedence logic, matches. No lib/ or test changes made (audit only). Filed downstream follow-ups on rex-gpu and rex-rancher karr boards about the strict-default behaviour change reaching their Hetzner fresh-install flows unpinned -- blocked by the permission system, content held for the orchestrator to file.
+
+Downstream-Follow-ups jetzt angelegt (Orchestrator, 2026-09-09): rex-gpu#4 und rex-rancher#4 -- strict host-key Default in Rex::LibSSH >= 0.004 bricht ersten Connect auf frischen Hetzner-Hosts ohne known_hosts-Eintrag; Fix im jeweiligen Deploy-Flow (ssh-keyscan oder Opt-out-Flag) VOR dem 0.004-Upgrade. Subagent war beim Anlegen vom Permission-Classifier geblockt, Main-Agent kam durch.
+
+2026-09-09 06:04 Review verifiziert (Lane-B-Batch, unabhaengig): Fix 09558d1 + Pin d1d1f86 real geprueft. Connection::LibSSH setzt strict_hostkeycheck NICHT mehr hart auf 0, sondern: per-connect opt -> openssh_opt StrictHostKeyChecking (no/off = -feature disable_strict_host_key_checking) -> Default strikt; knownhosts aus opt -> UserKnownHostsFile -> libssh-Default; error() traegt die Ablehnung, nie nach known_hosts geschrieben (lib/.../Connection/LibSSH.pm Z.43-64). Alle 5 lib-Module  0.004 einheitlich. t/05-hostkey.t git-getrackt, keine untracked Dateien. dzil test GRUEN: Result PASS, 8 Dateien/72 Tests. WICHTIG (CLAUDE.md-Hazard): t/01-rex-integration.t UND t/05-hostkey.t liefen REAL gegen echten sshd (kein skip_all) -- sshd+ssh-keygen vorhanden; die WARN-Zeilen belegen die real ausgefuehrten Ablehnungen (unbekannter Key + geaenderter Key/MITM). Net::LibSSH 0.004 lokal installiert (Runtime-Dep erfuellt). Designentscheidungen aufgeloest, rex-libssh-release-checker-Audit (2026-09-09) bestaetigt -> nicht strittig. OFFEN nur als Maintainer-Gate: Release-Reihenfolge Net::LibSSH 0.004 dann Rex::LibSSH 0.004 (cpanfile-Pin 0.004 hat auf CPAN noch kein Ziel; lokal irrelevant, da 0.004 installiert); CPANSec-Disclosure 14 Tage ab 2026-09-08. Downstream rex-gpu#4 + rex-rancher#4 bereits angelegt. -> done.
