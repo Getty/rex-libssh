@@ -1,5 +1,7 @@
 Revision history for Rex-LibSSH
 
+{{$NEXT}}
+
 0.004     2026-09-20 18:54:48Z
   - SECURITY: the server host key is now verified against known_hosts by
     default (CWE-322, reported privately via CPANSec). Previously
