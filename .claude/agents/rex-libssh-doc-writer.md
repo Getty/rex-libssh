@@ -5,8 +5,8 @@ model: sonnet
 allowed-tools: Read, Edit, Grep, Glob
 briefing:
   skills:
-    - getty-perl-release-author-getty
     - rex-libssh-core
+    - getty-perl-pod
 ---
 
 You are the rex-libssh-doc-writer for **Rex::LibSSH**.
