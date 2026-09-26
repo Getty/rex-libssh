@@ -2,7 +2,7 @@
 name: rex-libssh-doc-writer
 description: "Write and maintain Rex::LibSSH POD in the [@Author::GETTY] house format. Knows that this POD is read by people deciding how to reach a production server — the host-key default, what authentication is attempted in which order, and which Rex commands work without SFTP are operational claims, not prose. One module at a time; specify the path."
 model: sonnet
-allowed-tools: Read, Edit, Grep, Glob
+disallowedTools: Write, NotebookEdit, Bash
 briefing:
   skills:
     - rex-libssh-core
