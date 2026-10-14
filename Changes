@@ -1,6 +1,12 @@
 Revision history for Rex-LibSSH
 
 {{$NEXT}}
+  - File::LibSSH now reports failure instead of swallowing it. open returns
+    false when the exec request fails or, reading, when cat exits non-zero
+    (a missing file no longer reads as an empty one); write dies on a failed
+    write; close dies when the remote cat exited non-zero, so a write into a
+    missing directory or onto a full disk no longer ends in a truncated file
+    reported as changed (karr #9).
 
 0.004     2026-09-20 18:54:48Z
   - SECURITY: the server host key is now verified against known_hosts by
