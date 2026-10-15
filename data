@@ -1,0 +1,33 @@
+---
+class: standard
+completed: 2026-10-15T22:24:33Z
+created: 2026-10-06T19:50:45Z
+id: 9
+priority: medium
+started: 2026-10-14T18:41:26Z
+status: done
+tags:
+- bug
+- file
+- error-handling
+- review-2026-10-06
+title: 'File::LibSSH never reports failure: open always returns 1, close ignores cat''s
+  exit status'
+updated: 2026-10-15T22:24:33Z
+---
+
+`lib/Rex/Interface/File/LibSSH.pm:20-52` (`open`), `:63-70` (`write`), `:77-85` (`close`).
+
+* **Write.** `open '>'` starts `cat > $path` on a channel (`:34-38`) and ignores the result of `$ch->exec`; `write` ignores the byte count from `$ch->write` (`:69`); `close` sends EOF, drains and closes without looking at `$ch->exit_status` (`:77-85`). A full disk, a read-only filesystem or a missing parent directory therefore produce no error at any step - `cat` exits non-zero and nobody asks. Rex's `file` resource writes its temporary file through exactly this interface and then renames it into place, so with a full disk a truncated file is deployed and reported as changed. `Fs::LibSSH::upload` shows the intended behaviour: it checks the exit status and dies (`lib/Rex/Interface/Fs/LibSSH.pm:150-153`).
+* **Read.** `open '<'` runs `cat $path`, stores whatever came back and returns 1 (`:40-46`, `:51`) - also for a file that does not exist or is unreadable, which then reads as empty. Stock `Rex::Interface::File::SSH::open` returns the SFTP handle, i.e. false on failure, and callers test that.
+
+Done when: `open` returns false (or dies) when the exec request or, for `<`, the `cat` fails; `close` dies when the writing `cat` exits non-zero; `write` checks its return value; and the sshd-backed integration test covers a write into a non-existent directory and a read of a missing file.
+
+---
+Fleet review 2026-10-06 · kind: bug · confidence: verified
+
+2026-10-14 18:41 ad6eda8: File::LibSSH meldet Fehler (open false bei exec-Fehler/cat!=0, write dies bei <0, close dies bei cat-exit!=0). t/06-file-errors.t gegen sshd gruen, Suite ok. 0.005 per dzil install lokal installiert.
+
+2026-10-16 Review gegen Done-when: erfuellt (open false bei exec-/cat-Fehler, write dies bei <0, close dies bei cat!=0; t/06-file-errors.t deckt Schreiben in fehlendes Verzeichnis + Lesen fehlender Datei gegen sshd, 9/9 gruen, nicht geskippt). Keine Luecken; offen: >>-Modus ungetestet, Live-Test im OCP-Image steht aus.
+
+2026-10-15 22:24 Koordinator: Review bestätigt, ad6eda8 auf main, t/06 gegen sshd grün. Live im OCP-Image (Vendor 0.005) läuft mit dem Lab-Durchgang mit. Done.
