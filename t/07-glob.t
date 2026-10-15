@@ -50,8 +50,18 @@ is_deeply [ $fs->glob("$dir/my dir/*") ], [ "$dir/my dir/x.txt" ],
 is_deeply [ $fs->glob("$dir/a.conf") ], [ "$dir/a.conf" ],
     'literal existing path is returned';
 
-is_deeply [ $fs->glob("$dir/missing.conf") ], [],
-    'literal missing path returns ()';
+is_deeply [ $fs->glob("$dir/missing.conf") ], ["$dir/missing.conf"],
+    'plain missing path is returned unchanged, like perl glob';
+
+is_deeply [ $fs->glob("$dir/{a,nope,with space}.conf") ],
+    [ "$dir/a.conf", "$dir/nope.conf", "$dir/with space.conf" ],
+    'braces without wildcard: all alternatives, existing or not';
+
+is_deeply [ $fs->glob("$dir/{a,zzz}.conf") ], [ "$dir/a.conf", "$dir/zzz.conf" ],
+    'brace alternatives returned in order';
+
+is_deeply [ $fs->glob("$dir/{b,*.xyz}.conf") ], ["$dir/b.conf"],
+    'brace alternative with an unmatched wildcard yields nothing';
 
 run "rm -rf '$dir'";
 done_testing;
