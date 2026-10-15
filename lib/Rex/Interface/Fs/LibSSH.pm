@@ -104,9 +104,16 @@ sub glob {
         if defined $pattern
         && $pattern =~ /[\0';|&<>`$()\n\r\\]/;
 
-    my $out = $self->_run("echo $pattern");
-    chomp $out;
-    return split /\s+/, $out;
+    # Blanks inside the pattern are escaped so they stay part of one word
+    # (backslash itself was rejected above, so this cannot unescape anything).
+    # Unmatched wildcards are left verbatim by the shell, hence the -e/-L
+    # test; names are NUL-separated so whitespace in file names survives.
+    ( my $word = $pattern ) =~ s/([ \t])/\\$1/g;
+    my $out = $self->_run(
+        qq{for f in $word; do if [ -e "\$f" ] || [ -L "\$f" ]; then printf '%s\\0' "\$f"; fi; done}
+    );
+    return () unless defined $out && length $out;
+    return grep { length } split /\0/, $out;
 }
 
 sub mkdir {
