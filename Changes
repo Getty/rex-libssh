@@ -1,6 +1,6 @@
 Revision history for Rex-LibSSH
 
-{{$NEXT}}
+0.005     2026-10-21 19:27:03Z
   - A failed connect adds the "host key checking is on: add the host to
     known_hosts ... or opt out" hint only when the error is a host key
     refusal; a refused or unreachable port (a host still rebooting) carries
