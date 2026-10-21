@@ -9,6 +9,7 @@ briefing:
     - perl-release-dist-ini
     - getty-perl-core
     - rex-libssh-core
+    - rex-libssh-testing
     - kanban-issues-karr-ticket
 ---
 

@@ -6,6 +6,7 @@ disallowedTools: Write, NotebookEdit, Bash
 briefing:
   skills:
     - rex-libssh-core
+    - rex-libssh-channel
     - getty-perl-pod
 ---
 

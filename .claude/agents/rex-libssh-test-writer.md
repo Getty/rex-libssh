@@ -5,6 +5,8 @@ model: sonnet
 briefing:
   skills:
     - rex-libssh-core
+    - rex-libssh-channel
+    - rex-libssh-testing
     - rex
     - getty-perl-core
     - kanban-issues-karr-ticket
