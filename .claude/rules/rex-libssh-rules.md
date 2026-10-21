@@ -53,7 +53,7 @@ The harness spawns a **real sshd** per test file: don't fan out test runs in par
 
 ## Release — never without permission
 
-`dzil build` / `dzil test` / `prove -lr t/` are fine anytime. `dzil release` and any CPAN upload are STRICTLY forbidden without the maintainer's explicit go-ahead — even if a plan lists "release" as the next step. Stop and ask. `Net::LibSSH` is a Getty-authored dependency and must be pinned to its latest *released* CPAN version, never to the unreleased `$VERSION` in `~/dev/perl/p5-net-libssh`.
+`dzil build` / `dzil test` / `prove -lr t/` are fine anytime. `dzil release` and any CPAN upload are STRICTLY forbidden without the maintainer's explicit go-ahead — even if a plan lists "release" as the next step. Stop and ask. `Net::LibSSH` is a Getty-authored dependency and must be pinned to its latest *released* CPAN version, never to the unreleased `$VERSION` in `../p5-net-libssh`.
 
 ## Coordination — karr board (always in scope)
 

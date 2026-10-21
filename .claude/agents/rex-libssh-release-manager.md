@@ -44,7 +44,7 @@ code goes back to the worker as a note on its card, not as your own fix. **Never
    `Rex` and `Net::LibSSH`; `strict`, `warnings` and `base` are core. **`Net::LibSSH` is
    a Getty-authored dependency**, so it must be pinned to its latest *released* CPAN
    version (`cpanm --info Net::LibSSH`), never to the unreleased `$VERSION` sitting in
-   `~/dev/perl/p5-net-libssh`. This is the check that will most often find something:
+   `../p5-net-libssh`. This is the check that will most often find something:
    the pin was written against an older release than the one installed here. `Alien::libssh`
    is Net::LibSSH's dependency, not ours — it does not belong in our cpanfile.
 
@@ -79,7 +79,7 @@ code goes back to the worker as a note on its card, not as your own fix. **Never
 
 ## Downstream — this distribution is an upstream
 
-`Rex::GPU` (`~/dev/perl/rex-gpu`) and `Rex::Rancher` (`~/dev/perl/rex-rancher`) both
+`Rex::GPU` (`../rex-gpu`) and `Rex::Rancher` (`../rex-rancher`) both
 carry `recommends 'Rex::LibSSH'` and drive Hetzner dedicated servers through it. They
 recommend rather than pin, so a release here does not stale a version pin — but a
 behaviour change in `run`, `file` or `upload` reaches their production deploys with no
