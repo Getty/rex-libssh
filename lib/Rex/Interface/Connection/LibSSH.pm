@@ -58,8 +58,12 @@ sub connect {
     $ssh->option( knownhosts => $knownhosts ) if defined $knownhosts;
 
     unless ( $ssh->connect ) {
-        Rex::Logger::info( "LibSSH: can't connect to $server: " . ( $ssh->error // '' )
-              . ( $strict
+        # The hint only for a host key refusal -- Net::LibSSH names
+        # known_hosts in each of them. A refused or unreachable port (a host
+        # still rebooting) has nothing to do with host key checking.
+        my $error = $ssh->error // '';
+        Rex::Logger::info( "LibSSH: can't connect to $server: " . $error
+              . ( $strict && $error =~ /known_hosts/
                 ? " -- host key checking is on: add the host to known_hosts (ssh-keyscan)"
                   . " or opt out with strict_hostkeycheck => 0 / use Rex -feature => ['disable_strict_host_key_checking']"
                 : '' ), 'warn' );

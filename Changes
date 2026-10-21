@@ -1,6 +1,10 @@
 Revision history for Rex-LibSSH
 
 {{$NEXT}}
+  - A failed connect adds the "host key checking is on: add the host to
+    known_hosts ... or opt out" hint only when the error is a host key
+    refusal. A refused or unreachable port (a host still rebooting) got it
+    too and pointed at turning host key checking off. (k11)
   - File::LibSSH now reports failure instead of swallowing it. open returns
     false when the exec request fails or, reading, when cat exits non-zero
     (a missing file no longer reads as an empty one); write dies on a failed
