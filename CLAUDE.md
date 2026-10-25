@@ -72,7 +72,8 @@ having connected to nothing. Always say whether it ran.
 ## Delegation
 
 Delegate behavior-relevant code to the right agent instead of touching it
-yourself — principle and lane are in `.claude/rules/rex-libssh-rules.md`.
+yourself — the principle is a shared house rule (skilletor bundle
+`getty-cpan-dist@getty`); lanes and hazards are in `.claude/rules/rex-libssh-rules.md`.
 
 | Task | Agent |
 |---|---|
