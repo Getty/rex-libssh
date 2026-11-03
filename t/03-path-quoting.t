@@ -20,7 +20,6 @@ use Rex::Interface::File::LibSSH;
 # ============================================================
 
 subtest 'Fs::_q round-trips through single-quote shell semantics' => sub {
-    plan tests => 9;
 
     # Each input below, after _q() and shell un-quoting, MUST produce
     # exactly the original byte sequence. _q() handles these for free
@@ -40,7 +39,6 @@ subtest 'Fs::_q round-trips through single-quote shell semantics' => sub {
 };
 
 subtest 'File::_q matches Fs::_q contract' => sub {
-    plan tests => 3;
 
     is( Rex::Interface::File::LibSSH::_q("o'clock"), q['o'"'"'clock'],
         'File _q: single quote' );
@@ -51,7 +49,6 @@ subtest 'File::_q matches Fs::_q contract' => sub {
 };
 
 subtest 'glob rejects shell metacharacters beyond glob syntax' => sub {
-    plan tests => 8;
 
     # Every entry below contains a character that would let the pattern
     # break out of "echo <pattern>" and execute an arbitrary command.
@@ -120,7 +117,6 @@ print $sfh "x\n";
 close $sfh;
 
 subtest 'is_file + stat + unlink with paths containing shell metacharacters' => sub {
-    plan tests => 12;
 
     # Each block: create a file with an odd name (upload -> Fs::LibSSH
     # which goes through _q), verify is_file and stat, then unlink it.
@@ -165,7 +161,6 @@ subtest 'is_file + stat + unlink with paths containing shell metacharacters' => 
 };
 
 subtest 'upload + download with paths containing shell metacharacters' => sub {
-    plan tests => 6;
 
     # --- single quote in remote path ---
     my $src = "$dir/src-upload-$$";
@@ -206,7 +201,6 @@ subtest 'upload + download with paths containing shell metacharacters' => sub {
 };
 
 subtest 'legitimate glob still works after hardening' => sub {
-    plan tests => 2;
 
     # Make sure the regex blacklist didn't accidentally reject real
     # glob meta-chars (*, ?, [...]) or ordinary path bytes.
@@ -220,7 +214,6 @@ subtest 'legitimate glob still works after hardening' => sub {
 };
 
 subtest 'hostile glob pattern does not execute anything beyond globbing' => sub {
-    plan tests => 2;
 
     # If glob's hardening is bypassed, this pattern would emit
     #     echo /*; touch <marker>; echo done
