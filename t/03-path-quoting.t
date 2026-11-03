@@ -76,7 +76,11 @@ subtest 'glob rejects shell metacharacters beyond glob syntax' => sub {
 
 my $srv = TestSSHD->start;
 unless ($srv) {
-    plan skip_all => 'sshd or ssh-keygen not available';
+    # The unit subtests above already ran, so the file ends here instead of
+    # skipping as a whole.
+    diag 'no sshd or ssh-keygen: the integration part of this file did not run';
+    done_testing;
+    exit 0;
 }
 
 use Rex -feature => ['1.4'];
