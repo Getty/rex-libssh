@@ -84,5 +84,5 @@ yourself — the principle is a shared house rule (skilletor bundle
 
 The agents carry their skills via `briefing.skills` (see `.claude/agents/`);
 the main agent delegates rather than loading them. Skill sources live under
-`.claude/skills/` — `rex-libssh-core` is owned here, the rest are hardlinks
-(`manage-skills sync` after a clone).
+`.claude/skills/` — `rex-libssh-core`, `rex-libssh-channel` and `rex-libssh-testing` are
+owned here, the rest are installed by skilletor from `.claude/skilletor.json`.
