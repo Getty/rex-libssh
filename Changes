@@ -1,6 +1,8 @@
 Revision history for Rex-LibSSH
 
 {{$NEXT}}
+  - Requires Net::LibSSH 0.005 and with it Alien::libssh 0.003, whose own
+    libssh build is 0.12.2 with the upstream security fixes.
 
 0.005     2026-10-21 19:27:03Z
   - A failed connect adds the "host key checking is on: add the host to

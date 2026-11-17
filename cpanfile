@@ -1,4 +1,4 @@
-requires 'Net::LibSSH', '0.004';
+requires 'Net::LibSSH', '0.005';
 requires 'Rex',         '1.16.0';
 
 on test => sub {
