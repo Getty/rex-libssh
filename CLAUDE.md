@@ -82,7 +82,7 @@ yourself — the principle is a shared house rule (skilletor bundle
 | Commits, `Changes`, card → done, pre-release audit | `rex-libssh-release-manager` |
 | POD | `rex-libssh-doc-writer` |
 
-The agents carry their skills via `briefing.skills` (see `.claude/agents/`);
+The agents carry their skills via `skills:` (see `.claude/agents/`);
 the main agent delegates rather than loading them. Skill sources live under
 `.claude/skills/` — `rex-libssh-core`, `rex-libssh-channel` and `rex-libssh-testing` are
 owned here, the rest are installed by skilletor from `.claude/skilletor.json`.
