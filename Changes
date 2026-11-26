@@ -1,6 +1,6 @@
 Revision history for Rex-LibSSH
 
-{{$NEXT}}
+0.006     2026-11-26 04:10:20Z
   - Requires Net::LibSSH 0.005 and with it Alien::libssh 0.003, whose own
     libssh build is 0.12.2 with the upstream security fixes.
 
